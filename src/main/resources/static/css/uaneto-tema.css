@@ -1,0 +1,10 @@
+.jumbotron {
+    background-image: url(../img/wallpaper_1.jpg);
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+
+#role {
+    width: 120px;
+}

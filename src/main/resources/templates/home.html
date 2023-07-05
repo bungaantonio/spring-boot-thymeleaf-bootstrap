@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <title>Uaneto</title>
+</head>
+
+<body>
+<div class="jumbotron text-center">
+    <h1 class="display-4">
+        Bem-vindo,
+        <th:block th:switch="${role}">
+            <span th:case="'BUYER'">Comprador </span>
+            <span th:case="'SELLER'">Vendedor </span>
+            <span th:case="'SUPPLIER'">Fornecedor </span>
+        </th:block>
+
+        <mark><span th:text="${name}"></span></mark>
+    </h1>
+</div>
+<div class="container" th:if="${role =='SELLER'}">
+    <div class="col-sm-6">
+        <div class="card" style="margin: 20px 0">
+            <div class="card-body">
+                <h2 class="card-title">Cadastro de produto</h2>
+                <form th:action="@{/register-product}" method="post">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" class="form-control" name="name" required/>
+                    </div>
+                    <div>
+                        <label>Preço</label>
+                        <input type="number" class="form-control" name="price" required/>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" class="form-control" name="quantity" required/>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+
+        </div>
+        <h2 class="card-title">Meus produtos</h2>
+        <table class="table table-light" id="products">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th th:text="#{product.name}">Produto</th>
+                <th th:text="#{product.quantity}">Quantidade</th>
+                <th th:text="#{product.price}">Preço</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product, iStat: ${products}">
+                <th scope="row" th:text="${iStat.index+1}">1</th>
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li th:each="product : ${products}">
+                <span th:text="${product.name}"></span>
+
+                &times
+
+                <span th:text="${product.quantity}"></span>
+                <span th:text="${product.price}"></span>
+
+                <form th:action="@{/register-product}" th:method="delete">
+                    <input type="hidden" name="id" th:value="${product.id}"/>
+                    <button>Apagar</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container" th:if="${role =='BUYER'}">
+    <div class="container" style="margin: 20px 0">
+        <div class="row">
+            <div class="col-sm-3">
+                <h4>Categories</h4>
+                <ul class="list-group">
+                    <a th:href="@{/shop}">
+                        <li class="list-group-item">All Products</li>
+                    </a>
+                    <a href="" th:each="category, iStat: ${categories}"
+                       th:href="@{/shop/category/{id}(id=${category.id})}">
+                        <li class="list-group-item" th:text="${category.name}"></li>
+                    </a>
+
+                </ul>
+            </div>
+            <div class="col-sm-9">
+                <div class="card" style="margin: 20px 0" th:each="product : ${products}">
+                    <div class="row no-gutters">
+                        <div class="col-sm-5 d-flex justify-content-center">
+                            <img class="" height="150px" width="150px"
+                                 th:src="@{${'/productImages/'+product.imageName}}" alt="">
+                        </div>
+                        <div class="col-sm-7 d-flex justify-content-center">
+                            <div class="card-body">
+                                <h5 class="card-text" th:text="${product.name}"></h5>
+                                <h4><span th:text="${product.price}"></span></h4>
+                                <p th:text="${product.description}">Suresh Dasari is a founder and technical le</p>
+                                <a href="#" th:href="@{/shop/viewproduct/{id}(id=${product.id})}"
+                                   class="btn btn-primary">View Product</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer></footer>
+</body>
+
+</html>
